@@ -1,9 +1,8 @@
-// controllers/taskController.mjs
-import Task from '../models/Task.mjs';
+import * as TaskRepository from './task.repository.js';
 
 export async function getAllTasks(req, res) {
   try {
-    const tasks = await Task.find().populate('owner');
+    const tasks = await TaskRepository.getAllTasks();
     res.json(tasks);
   } catch (err) {
     console.error(err);
@@ -13,15 +12,13 @@ export async function getAllTasks(req, res) {
 
 export async function createTask(req, res) {
   const { name, description } = req.body;
-  const owner = req.user._id; // Assuming you're using Passport for authentication
+  const owner = req.user._id;
 
   try {
-    const task = new Task({ name, description, owner });
-    await task.save();
+    const task = await TaskRepository.createTask({ name, description, owner });
     res.status(201).json(task);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 }
-

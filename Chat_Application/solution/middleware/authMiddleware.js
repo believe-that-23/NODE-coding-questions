@@ -1,20 +1,22 @@
-// middleware/authMiddleware.mjs
 import jwt from 'jsonwebtoken';
 
-export function authenticateJWT(req, res, next) {
-  const token = req.headers.authorization;
+export const authenticateJWT = (req, res, next) => {
+  const token = req.headers['authorization'];
   if (!token) {
-    return res.status(401).json({ message: 'Authorization token is missing.' });
+    return res.status(401).send("Unauthorized");
   }
 
-  jwt.verify(token, 'your-secret-key', (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: 'Invalid token.' });
-    }
-    req.user = user;
-    next();
-  });
-}
+  try {
+    const payload = jwt.verify(token, 'your-secret-key');
+    req.user = payload.user;
+  } catch (err) {
+    console.log(err);
+    return res.status(401).send("Unauthorized");
+  }
+
+  next();
+};
+
 
 export function isAdmin(req, res, next) {
   if (req.user.role === 'admin') {
@@ -22,4 +24,6 @@ export function isAdmin(req, res, next) {
   }
   res.status(403).json({ message: 'Permission denied.' });
 }
+
+
 
