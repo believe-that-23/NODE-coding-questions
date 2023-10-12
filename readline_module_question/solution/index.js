@@ -1,12 +1,28 @@
 import readline from 'readline';
+import fs from 'fs';
 
-const tasks = [];
-let taskIdCounter = 1;
+// Define the file where tasks will be stored
+const tasksFile = 'tasks.txt';
+
+// Load tasks from the file
+let tasks = [];
+try {
+  tasks = JSON.parse(fs.readFileSync(tasksFile, 'utf8'));
+} catch (err) {
+  tasks = [];
+}
+
+let taskIdCounter = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 1;
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
+
+function saveTasksToFile() {
+  // Save tasks to the file
+  fs.writeFileSync(tasksFile, JSON.stringify(tasks, null, 2));
+}
 
 function promptUserChoice() {
   console.log('Task Manager');
@@ -53,6 +69,7 @@ function addTask() {
     };
     tasks.push(task);
     console.log('Task added successfully.');
+    saveTasksToFile(); // Save tasks to the file
     promptUserChoice();
   });
 }
@@ -80,8 +97,9 @@ function markTaskAsCompleted() {
     }
     const task = tasks.find((t) => t.id === id);
     if (task) {
-      task.completed = !task.completed; 
+      task.completed = !task.completed; // Toggle the completed status
       console.log('Task marked as completed.');
+      saveTasksToFile(); // Save tasks to the file
     } else {
       console.log('Task not found.');
     }
@@ -89,9 +107,9 @@ function markTaskAsCompleted() {
   });
 }
 
-
 function deleteTask() {
   rl.question('Enter the task ID to delete: ', (taskId) => {
+    console.log(taskId);
     const id = parseInt(taskId, 10);
     if (isNaN(id) || id < 1 || id > taskIdCounter - 1) {
       console.log('Invalid task ID. Please enter a valid task ID.');
@@ -102,6 +120,7 @@ function deleteTask() {
     if (index !== -1) {
       tasks.splice(index, 1);
       console.log('Task deleted successfully.');
+      saveTasksToFile(); // Save tasks to the file
     } else {
       console.log('Task not found.');
     }
@@ -111,6 +130,7 @@ function deleteTask() {
 
 function quit() {
   console.log('Goodbye!');
+  saveTasksToFile(); // Save tasks to the file before quitting
   rl.close();
 }
 
