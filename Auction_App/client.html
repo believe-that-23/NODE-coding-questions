@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction App</title>
+</head>
+
+<body>
+    <h1>Auction App</h1>
+    <div id="auction-details">
+        <p id="item">Item: </p>
+        <p id="current-price">Current Price: $0</p>
+        <p id="owner">Owner: None</p>
+        <p id="timer">Time Left: 0 seconds</p>
+    </div>
+    <input type="text" id="username" placeholder="Enter Username">
+    <input type="text" id="item-description" placeholder="Enter Item Description">
+    <input type="number" id="starting-price" placeholder="Enter Starting Price">
+    <button id="start-auction">Start Auction</button>
+    <input type="number" id="bid-amount" placeholder="Enter Bid">
+    <button id="place-bid">Place Bid</button>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io.connect('http://localhost:3000');
+
+        const itemElem = document.getElementById('item');
+        const currentPriceElem = document.getElementById('current-price');
+        const ownerElem = document.getElementById('owner');
+        const timerElem = document.getElementById('timer');
+        const description = document.getElementById('description');
+        const startAuctionButton = document.getElementById('start-auction');
+        const bidAmountInput = document.getElementById('bid-amount');
+        const usernameInput = document.getElementById('username');
+        const itemDescriptionInput = document.getElementById('item-description');
+        const startingPriceInput = document.getElementById('starting-price');
+        const placeBidButton = document.getElementById('place-bid');
+
+        // Handle new auction details
+        socket.on('newAuction', (auction) => {
+            itemElem.textContent = `Item: ${auction.item}`;
+            currentPriceElem.textContent = `Current Price: $${auction.currentPrice}`;
+            ownerElem.textContent = `Owner: ${auction.owner}`;
+            updateTimer(auction.timer);
+        });
+
+        // Handle bid placed
+        socket.on('bidPlaced', (auction) => {
+            currentPriceElem.textContent = `Current Price: $${auction.currentPrice} ${auction.owner}`;
+        });
+
+        // Handle auction timer updates
+        socket.on('auctionTimer', (timeLeft) => {
+            updateTimer(timeLeft);
+        });
+
+        // Handle auction end
+        socket.on('auctionEnded', (auction) => {
+            currentPriceElem.textContent = `Current Price: $${auction.currentPrice}`;
+            timerElem.textContent = `Auction Ended. ${auction.owner} got ${auction.item} for $${auction.currentPrice}`;
+            description.textContent = `Description: None`;
+        });
+
+        // Function to update the timer
+        function updateTimer(timeLeft) {
+            if (timeLeft > 0) {
+                timerElem.textContent = `Time Left: ${timeLeft} seconds`;
+            } else {
+                timerElem.textContent = 'Auction Ended';
+            }
+        }
+
+        // Handle start auction button click
+        startAuctionButton.addEventListener('click', () => {
+            const username = usernameInput.value;
+            const itemDescription = itemDescriptionInput.value;
+            const startingPrice = parseFloat(startingPriceInput.value);
+            const timer = parseInt(prompt('Enter auction duration (in seconds):'));
+
+            if (username && itemDescription && !isNaN(startingPrice) && startingPrice > 0 && !isNaN(timer) && timer > 0) {
+                itemDescriptionInput.value = "";
+                startingPriceInput.value = null;
+                socket.emit('postItem', itemDescription, startingPrice, timer, username);
+            }
+        });
+
+        // Handle place bid button click
+        placeBidButton.addEventListener('click', () => {
+            const bidAmount = parseFloat(bidAmountInput.value);
+            const username = usernameInput.value;
+            // console.log(username)
+            if (!username) {
+                alert("Please add a username to place a bid");
+            } else if (!isNaN(bidAmount) && bidAmount > 0) {
+                bidAmountInput.value = null;
+                socket.emit('placeBid', bidAmount, username);
+            }
+        });
+
+        // Handle auction in progress
+        socket.on('auctionInProgress', (message) => {
+            alert(message); // Display an alert message
+        });
+
+    </script>
+
+</body>
+
+</html>
