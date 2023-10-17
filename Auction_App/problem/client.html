@@ -1,0 +1,61 @@
+<!-- complete all the events and necessary functions -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction App</title>
+</head>
+
+<body>
+    <h1>Auction App</h1>
+    <div id="auction-details">
+        <p id="item">Item: </p>
+        <p id="current-price">Current Price: $0</p>
+        <p id="owner">Owner: None</p>
+        <p id="timer">Time Left: 0 seconds</p>
+    </div>
+    <input type="text" id="username" placeholder="Enter Username">
+    <input type="text" id="item-description" placeholder="Enter Item Description">
+    <input type="number" id="starting-price" placeholder="Enter Starting Price">
+    <button id="start-auction">Start Auction</button>
+    <input type="number" id="bid-amount" placeholder="Enter Bid">
+    <button id="place-bid">Place Bid</button>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io.connect('http://localhost:3000');
+
+        // ----------------------- Write your code below ---------------------------
+
+        // Handle new auction details
+        socket.on('newAuction', (auction) => { });
+
+        // Handle bid placed
+        socket.on('bidPlaced', (auction) => { });
+
+        // Handle auction timer updates
+        socket.on('auctionTimer', (timeLeft) => { });
+
+        // Handle auction end
+        socket.on('auctionEnded', (auction) => { });
+
+        // Function to update the timer
+        function updateTimer(timeLeft) { }
+
+        // Handle start auction button click
+        startAuctionButton.addEventListener('click', () => { });
+
+        // Handle place bid button click
+        placeBidButton.addEventListener('click', () => { });
+
+        // Handle auction in progress
+        socket.on('auctionInProgress', (message) => { });
+
+    </script>
+
+</body>
+
+</html>
