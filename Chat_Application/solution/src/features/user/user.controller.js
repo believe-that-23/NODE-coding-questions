@@ -3,7 +3,7 @@ import * as UserRepository from './user.repository.js';
 export async function getAllUsers(req, res) {
   try {
     const users = await UserRepository.getAllUsers();
-    res.json(users);
+    res.status(200).json(users);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
@@ -30,7 +30,7 @@ export async function deleteUser(req, res) {
     if (!user) {
       res.status(404).json({ error: 'User not found' });
     } else {
-      res.json(user);
+      res.status(200).json(user);
     }
   } catch (err) {
     console.error(err);
@@ -49,7 +49,7 @@ export async function login(req, res) {
   req.user = user;
   req.token = token;
 
-  res.json(token);
+  res.status(200).json(token);
 }
 
 export async function register(req, res) {
@@ -59,7 +59,7 @@ export async function register(req, res) {
     await UserRepository.registerUser({ username, password, role });
     res.status(201).json({ message: 'User registered successfully.' });
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 }

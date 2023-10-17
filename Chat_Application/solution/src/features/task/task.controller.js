@@ -3,7 +3,7 @@ import * as TaskRepository from './task.repository.js';
 export async function getAllTasks(req, res) {
   try {
     const tasks = await TaskRepository.getAllTasks();
-    res.json(tasks);
+    res.status(200).json(tasks);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });

@@ -1,27 +1,7 @@
 [
   {
-    "id": 2,
-    "description": "drive",
+    "id": 0,
+    "description": "need to be done",
     "completed": false
-  },
-  {
-    "id": 3,
-    "description": "drink",
-    "completed": false
-  },
-  {
-    "id": 4,
-    "description": "drink more",
-    "completed": false
-  },
-  {
-    "id": 5,
-    "description": "drink whole night",
-    "completed": false
-  },
-  {
-    "id": 6,
-    "description": "recover",
-    "completed": true
   }
 ]

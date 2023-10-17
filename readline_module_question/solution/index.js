@@ -5,7 +5,7 @@ import fs from 'fs';
 const tasksFile = 'tasks.txt';
 
 // Load tasks from the file
-let tasks = [];
+export let tasks = [];
 try {
   tasks = JSON.parse(fs.readFileSync(tasksFile, 'utf8'));
 } catch (err) {
@@ -19,7 +19,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-function saveTasksToFile() {
+export function saveTasksToFile() {
   // Save tasks to the file
   fs.writeFileSync(tasksFile, JSON.stringify(tasks, null, 2));
 }
@@ -52,7 +52,7 @@ function promptUserChoice() {
   });
 }
 
-function showMenu() {
+export function showMenu() {
   console.log('1. Add Task');
   console.log('2. List Tasks');
   console.log('3. Mark Task as Completed');
@@ -60,7 +60,7 @@ function showMenu() {
   console.log('5. Quit');
 }
 
-function addTask() {
+export function addTask() {
   rl.question('Enter task description: ', (description) => {
     const task = {
       id: taskIdCounter++,
@@ -74,7 +74,7 @@ function addTask() {
   });
 }
 
-function listTasks() {
+export function listTasks() {
   if (tasks.length === 0) {
     console.log('No tasks to display.');
   } else {
@@ -87,7 +87,7 @@ function listTasks() {
   promptUserChoice();
 }
 
-function markTaskAsCompleted() {
+export function markTaskAsCompleted() {
   rl.question('Enter the task ID to mark as completed: ', (taskId) => {
     const id = parseInt(taskId, 10);
     if (isNaN(id) || id < 1 || id > taskIdCounter - 1) {
@@ -107,7 +107,7 @@ function markTaskAsCompleted() {
   });
 }
 
-function deleteTask() {
+export function deleteTask() {
   rl.question('Enter the task ID to delete: ', (taskId) => {
     console.log(taskId);
     const id = parseInt(taskId, 10);
@@ -128,7 +128,7 @@ function deleteTask() {
   });
 }
 
-function quit() {
+export function quit() {
   console.log('Goodbye!');
   saveTasksToFile(); // Save tasks to the file before quitting
   rl.close();

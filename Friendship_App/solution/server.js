@@ -1,35 +1,7 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-
-import jwtAuth from "./src/middleware/jwt.middleware.js";
 import connectDB from "./src/configs/db.js";
+import server from "./index.js";
 
-import userRouter from "./src/features/user/user.route.js";
-import friendshipRouter from "./src/features/friendship/friendship.routes.js";
-import otpRouter from "./src/features/otp/otp.routes.js";
-
-const server = express();
-const port = 8000;
-dotenv.config();
-
-server.use(cookieParser());
-server.use(express.json());
-server.use(cors());
-
-server.use("/api/users", userRouter);
-server.use("/api/friends", jwtAuth, friendshipRouter);
-server.use("/api/otp", otpRouter);
-
-server.get("/", (req, res) => {
-  res.send("Welcome to Ecommerce APIs");
-});
-
-server.use((req, res) => {
-  return res.status(404).send("API not found");
-});
-
+let port = 3000;
 
 server.listen(port, async function (err) {
   if (err) console.log(`Error in running the server: ${err}`);
